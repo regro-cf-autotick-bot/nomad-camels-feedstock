@@ -1,25 +1,29 @@
-{% set name = "nomad-camels" %}
-{% set version = "1.6.0" %}
+schema_version: 1
+
+context:
+  name: nomad-camels
+  version: "1.6.0"
 
 package:
-  name: {{ name|lower }}
-  version: {{ version }}
+  name: ${{ name|lower }}
+  version: ${{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/nomad_camels-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/nomad_camels-${{ version }}.tar.gz
   sha256: 24c2e9fafabeaf2c17995111e04a4b80de8f5a338a1d2e139b94e538ff4be2ee
 
 build:
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 2
-  skip: ture  # [py<311]
+  number: 3
+  skip: ${{ 'ture' if match(python, "<3.11") else '' }}
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
     - python
     - setuptools >=61.0
     - pip
-    - libgl-devel  # [linux]
+    - if: linux
+      then: libgl-devel
   run:
     - python
     - pyside6 >=6.5.1
@@ -111,19 +115,21 @@ requirements:
     - pyvisa >=1.13.0
     - pyvisa-py >=0.7.0
 
-test:
-  imports:
-    - nomad_camels
-  commands:
-    # - pip check
-  requires:
-    - pip
+tests:
+  - python:
+      imports:
+        - nomad_camels
+      pip_check: false
+  - requirements:
+      run:
+        - pip
+    script:
 
 about:
-  home: https://fau-lap.github.io/NOMAD-CAMELS/
   summary: CAMELS is a configurable measurement software, targeted towards the requirements of experimental solid-state physics.
   license: LGPL-2.1-or-later
   license_file: LICENSE
+  homepage: https://fau-lap.github.io/NOMAD-CAMELS/
 
 extra:
   recipe-maintainers:
