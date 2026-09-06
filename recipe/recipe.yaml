@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: nomad-camels
-  version: "1.6.0"
+  version: "1.11.0"
 
 package:
   name: ${{ name|lower }}
@@ -10,10 +10,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/nomad_camels-${{ version }}.tar.gz
-  sha256: 24c2e9fafabeaf2c17995111e04a4b80de8f5a338a1d2e139b94e538ff4be2ee
+  sha256: d23729030d16edba0e4d1792b38066512801ad51b4db363cb3be863411dac5cd
 
 build:
-  number: 3
+  number: 0
   skip: ${{ 'ture' if match(python, "<3.11") else '' }}
   script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
